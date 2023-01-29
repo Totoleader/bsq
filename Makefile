@@ -1,0 +1,38 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: macote <macote@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/01/28 12:32:44 by macote            #+#    #+#              #
+#    Updated: 2023/01/29 10:08:07 by macote           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = bsq
+SRC = main.c
+H ?= 25
+L ?= 25
+D ?= 5
+MAP = ./map.pl $(H) $(L) $(D)
+DIMENSIONS = echo $(H) $(L) $(D)
+
+run: $(NAME)
+	./$(NAME)
+
+$(NAME): get_map
+	gcc -o $(NAME) $(SRC)
+
+get_map:
+	$(DIMENSIONS) > map
+	$(MAP) >> map
+
+clean:
+	/bin/rm -f *.o
+
+fclean: clean
+	/bin/rm -f $(NAME)
+
+re: fclean all
+
