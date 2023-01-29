@@ -6,7 +6,7 @@
 #    By: macote <macote@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/28 12:32:44 by macote            #+#    #+#              #
-#    Updated: 2023/01/29 10:08:07 by macote           ###   ########.fr        #
+#    Updated: 2023/01/29 15:18:28 by macote           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ SRC = main.c
 H ?= 25
 L ?= 25
 D ?= 5
-MAP = ./map.pl $(H) $(L) $(D)
-DIMENSIONS = echo $(H) $(L) $(D)
+MAP = ./map.pl $(L) $(H) $(D)
+DIMENSIONS = echo $(L) $(H) $(D)
 
 run: $(NAME)
 	./$(NAME)

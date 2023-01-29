@@ -6,7 +6,7 @@
 /*   By: macote <macote@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 12:11:04 by macote            #+#    #+#             */
-/*   Updated: 2023/01/29 13:46:20 by macote           ###   ########.fr       */
+/*   Updated: 2023/01/29 15:50:12 by macote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,19 +95,10 @@ int get_density(char *map)
 int get_lenght(char *map)
 {
 	int i;
-	int nbr_of_space;
 	int resultat;
 	
 	i = 0;
-	nbr_of_space = 0;
 	resultat = 0;
-	while (nbr_of_space != 1)
-	{
-		if (map[i] == ' ')
-			nbr_of_space++;
-		i++;
-	}
-	
 	while (map[i] != ' ')
 	{
 		resultat *= 10;
@@ -121,10 +112,19 @@ int get_lenght(char *map)
 int get_height(char *map)
 {
 	int i;
+	int nbr_of_space;
 	int resultat;
 	
 	i = 0;
+	nbr_of_space = 0;
 	resultat = 0;
+	while (nbr_of_space != 1)
+	{
+		if (map[i] == ' ')
+			nbr_of_space++;
+		i++;
+	}
+	
 	while (map[i] != ' ')
 	{
 		resultat *= 10;
@@ -194,13 +194,13 @@ char **map_filled(char **map_canvas, char *raw_map_clean)
 		if (raw_map_clean[k] != '\n')
 		{
 			map_canvas[i][j] = raw_map_clean[k];
-			i++;
+			j++;
 		}
 		//si c'est \n ne copie pas et commence une autre ligne
 		else
 		{
-			i = 0;
-			j++;
+			j = 0;
+			i++;
 		}
 		//incrémente k dans tout les cas
 		k++;
@@ -227,6 +227,6 @@ int main(int argc, char **argv)
 		printf("\n");
 		i++;
 	}
-	
+
 	return (0);
 }
