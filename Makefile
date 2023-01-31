@@ -6,7 +6,7 @@
 #    By: macote <macote@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/28 12:32:44 by macote            #+#    #+#              #
-#    Updated: 2023/01/31 10:49:29 by macote           ###   ########.fr        #
+#    Updated: 2023/01/31 10:58:16 by macote           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,8 +25,7 @@ $(NAME): get_map
 	gcc -o $(NAME) $(SRC)
 
 get_map:
-	$(DIMENSIONS) > map
-	$(MAP) >> map
+	$(MAP) > map
 
 clean:
 	/bin/rm -f *.o

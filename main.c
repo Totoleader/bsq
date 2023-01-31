@@ -6,7 +6,7 @@
 /*   By: macote <macote@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 12:11:04 by macote            #+#    #+#             */
-/*   Updated: 2023/01/30 16:55:58 by macote           ###   ########.fr       */
+/*   Updated: 2023/01/31 12:38:52 by macote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ char *raw_map_cleaned(char *map)
 	nb_of_newlines = 0;
 	i = 0;
 	
-	//trouve l'endroit après le deuxièmme \n
-	while (nb_of_newlines < 2)
+	//trouve l'endroit après le premier \n
+	while (nb_of_newlines < 1)
 	{
 		if (map[i +1] == '\n')
 		{
@@ -56,7 +56,7 @@ char *raw_map_cleaned(char *map)
 		}
 		i++;
 	}
-	//retourne l'endroit après le deuxièmme \n
+	//retourne l'endroit après le premier \n
 	map = &map[i + 1];
 	return (map);
 }
@@ -69,75 +69,97 @@ char *raw_map_cleaned(char *map)
 /////////                                   |                                                   /////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void error(void)
+{
+	write(STDERR_FILENO, "map error\n", 10);
+	exit(0);
+}
 
+void check_identical_error(char dot,char o, char x)
+{
+	//check les double
+	if ((dot == o) || (dot == x) || (o == x))
+	{
+	 error();
+	}
+	//check si c'est imnprimmable ou il en manque un
+	if ((dot < ' ') || (x < ' ') || (o < ' ')
+		||(dot > '~') || (x > '~') || (o > '~'))
+	{
+	 error();
+	}
+}
 
-//returns density of map from raw map
-int get_density(char *map)
+char plein_vide_obs(char *map, char car)
 {
 	int i;
-	int nbr_of_space;
-	int resultat;
-	
+	int j;
+	int endline;
+	char vide_obs_plein[3];
+
 	i = 0;
-	nbr_of_space = 0;
-	resultat = 0;
-	while (nbr_of_space != 2)
+	j = 2;
+	while (map[i + 1] != '\n')
 	{
-		if (map[i] == ' ')
-			nbr_of_space++;
 		i++;
 	}
-	
-	while (map[i] >= '0' && map[i] <= '9')
+	endline = i;
+	while (i > (endline - 3))
 	{
-		resultat *= 10;
-		resultat += (map[i] - 48);
-		i++;	
+		vide_obs_plein[j] = map[i];
+		j--;
+		i--;
 	}
-	return(resultat);
+	check_identical_error(vide_obs_plein[0], vide_obs_plein[1], vide_obs_plein[2]);
+	if (car == 'o')
+		return (vide_obs_plein[1]);
+	if (car == 'x')
+		return (vide_obs_plein[2]);
+	else
+		return (vide_obs_plein[0]);
 }
 
 //returns lenght of map from raw map
 int get_lenght(char *map)
 {
-	int i;
-	int resultat;
+	// int i;
+	// int resultat;
 	
-	i = 0;
-	resultat = 0;
-	while (map[i] != ' ')
-	{
-		resultat *= 10;
-		resultat += (map[i] - 48);
-		i++;	
-	}
-	return(resultat);
+	// i = 0;
+	// resultat = 0;
+	// while (map[i] != ' ')
+	// {
+	// 	resultat *= 10;
+	// 	resultat += (map[i] - 48);
+	// 	i++;	
+	// }
+	return(25);
 }
 
 //returns height of map from raw map
 int get_height(char *map)
 {
-	int i;
-	int nbr_of_space;
-	int resultat;
+	// int i;
+	// int nbr_of_space;
+	// int resultat;
 	
-	i = 0;
-	nbr_of_space = 0;
-	resultat = 0;
-	while (nbr_of_space != 1)
-	{
-		if (map[i] == ' ')
-			nbr_of_space++;
-		i++;
-	}
+	// i = 0;
+	// nbr_of_space = 0;
+	// resultat = 0;
+	// while (nbr_of_space != 1)
+	// {
+	// 	if (map[i] == ' ')
+	// 		nbr_of_space++;
+	// 	i++;
+	// }
 	
-	while (map[i] != ' ')
-	{
-		resultat *= 10;
-		resultat += (map[i] - 48);
-		i++;	
-	}
-	return(resultat);
+	// while (map[i] != ' ')
+	// {
+	// 	resultat *= 10;
+	// 	resultat += (map[i] - 48);
+	// 	i++;	
+	// }
+	return(25);
 }
 
 //returns the number of char in the map from get_lenght() and get_height()
@@ -233,7 +255,7 @@ char **o_to_0(char **map)
         j = 0;
         while (j < (get_lenght(raw_map())))
         {
-            if (map[i][j] == 'o')
+            if (map[i][j] == plein_vide_obs(raw_map(), 'o'))
                 map[i][j] = '0';
             j++;
         }
@@ -357,7 +379,7 @@ char** put_x_on_map(char **map, int i_de_base, int j_de_base, char max)
 		j = j_de_base;
         while (max_j > '0')
         {	
-			map[i][j] = 'x';
+			map[i][j] = plein_vide_obs(raw_map(), 'x');
 			j--;
 			max_j--;
         }
@@ -386,11 +408,11 @@ char** put_all_x_on_map(char **map, char* adress_max)
 			}
 			else if (map[i][j] == '0')
 			{
-				map[i][j] = 'o';
+				map[i][j] = plein_vide_obs(raw_map(), 'o');
 			}
 			else
 			{
-				map[i][j] = '.';
+				map[i][j] = plein_vide_obs(raw_map(), '.');
 			}
 			
             j++;
@@ -424,8 +446,7 @@ int main(int argc, char **argv)
 		printf("\n");
 		i++;
 	}
-		// printf("%p\n", find_max_adress(algo_result_map));
-		// printf("%p", &algo_result_map[24][24]);
 
+	write(1, "\n", 1);
 	return (0);
 }
