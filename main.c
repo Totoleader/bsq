@@ -6,7 +6,7 @@
 /*   By: macote <macote@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 12:11:04 by macote            #+#    #+#             */
-/*   Updated: 2023/01/31 16:47:20 by macote           ###   ########.fr       */
+/*   Updated: 2023/01/31 17:48:55 by macote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,55 +175,13 @@ int get_lenght(char *map)
             if (map[xx] == '\0')
                 break ;
         }
-        if ((y != 0 && cmp != x) || (y == 1 && x <= 0))
+        if ((y != 0 && cmp != x) || (y == 1 && x <= 0) || (x <= 0))
             error();
         cmp = x;
         y++;
     }
     return (cmp);
 }
-// //returns lenght of map from raw map
-// int get_lenght(char *map)
-// {
-// 	// int i;
-// 	// int resultat;
-	
-// 	// i = 0;
-// 	// resultat = 0;
-// 	// while (map[i] != ' ')
-// 	// {
-// 	// 	resultat *= 10;
-// 	// 	resultat += (map[i] - 48);
-// 	// 	i++;	
-// 	// }
-// 	return(25);
-// }
-
-//returns height of map from raw map
-// int get_height(char *map)
-// {
-// 	// int i;
-// 	// int nbr_of_space;
-// 	// int resultat;
-	
-// 	// i = 0;
-// 	// nbr_of_space = 0;
-// 	// resultat = 0;
-// 	// while (nbr_of_space != 1)
-// 	// {
-// 	// 	if (map[i] == ' ')
-// 	// 		nbr_of_space++;
-// 	// 	i++;
-// 	// }
-	
-// 	// while (map[i] != ' ')
-// 	// {
-// 	// 	resultat *= 10;
-// 	// 	resultat += (map[i] - 48);
-// 	// 	i++;	
-// 	// }
-// 	return(25);
-// }
 
 //returns the number of char in the map from get_lenght() and get_height()
 int get_char_lenght(char* map)
@@ -509,7 +467,6 @@ void print_result(char *argv)
 		printf("\n");
 		i++;
 	}
-
 	write(1, "\n", 1);
 }
 
