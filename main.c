@@ -6,7 +6,7 @@
 /*   By: macote <macote@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 12:11:04 by macote            #+#    #+#             */
-/*   Updated: 2023/01/31 12:38:52 by macote           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:00:54 by macote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -422,7 +422,7 @@ char** put_all_x_on_map(char **map, char* adress_max)
 	return(map);
 }
 
-int main(int argc, char **argv)
+void print_result(void)
 {
 	int i;
 	char **canvas_map;
@@ -448,5 +448,24 @@ int main(int argc, char **argv)
 	}
 
 	write(1, "\n", 1);
+}
+
+void print_all_results(int argc, char **argv)
+{
+	int i;
+
+	i = 0;
+	while (argc < 0)
+	{
+		//print
+	}
+	
+}
+
+int main(int argc, char **argv)
+{
+
+	print_result();
+	print_all_results(argc, argv);
 	return (0);
 }
