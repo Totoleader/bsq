@@ -6,7 +6,7 @@
 /*   By: macote <macote@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 12:11:04 by macote            #+#    #+#             */
-/*   Updated: 2023/01/31 16:00:54 by macote           ###   ########.fr       */
+/*   Updated: 2023/01/31 16:47:20 by macote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@
 
 
 //ouvre le fichier qui contient la map et renvoie une string qui contient la map
-char *raw_map(void)
+char *raw_map(char *argv)
 {
 	int fd;                                             // file descriptor
 	char *map;                                          // where the map will be copied
 	
 	map = (char *)malloc(sizeof(char) * 10000000);		// allocate memory for the map to be copied
-	fd = open("map", O_RDWR);                           // open the file
+	fd = open(argv, O_RDWR);                           // open the file
 	
 	read(fd, map, sizeof(char) * 10000000);             // read the file
 	close(fd);
@@ -72,7 +72,7 @@ char *raw_map_cleaned(char *map)
 void error(void)
 {
 	write(STDERR_FILENO, "map error\n", 10);
-	exit(0);
+	//exit(0);
 }
 
 void check_identical_error(char dot,char o, char x)
@@ -119,48 +119,111 @@ char plein_vide_obs(char *map, char car)
 		return (vide_obs_plein[0]);
 }
 
-//returns lenght of map from raw map
+
+int    get_height(char *map)
+{
+    int x;
+    int xx;
+    int y;
+    int cmp;
+    xx = 0;
+    x = 0;
+    y = 0;
+    cmp = 0;
+    while (map[xx] != '\n')
+    {
+        xx++;
+    }
+    while (map[xx] != '\0')
+    {
+        xx++;
+        x = 0;
+        while (map[xx] != '\n')
+        {
+            x++;
+            xx++;
+            if (map[xx] == '\0')
+                break ;
+        }
+        cmp = x;
+        y++;
+    }
+    return (y - 1);
+}
 int get_lenght(char *map)
 {
-	// int i;
-	// int resultat;
-	
-	// i = 0;
-	// resultat = 0;
-	// while (map[i] != ' ')
-	// {
-	// 	resultat *= 10;
-	// 	resultat += (map[i] - 48);
-	// 	i++;	
-	// }
-	return(25);
+    int x;
+    int xx;
+    int y;
+    int cmp;
+    xx = 0;
+    x = 0;
+    y = 0;
+    cmp = 0;
+    while (map[xx] != '\n')
+    {
+        xx++;
+    }
+    while (map[xx + 1] != '\0')
+    {
+        xx++;
+        x = 0;
+        while ((map[xx] != '\n' && map[xx] != '\0') || map[xx] == '\0')
+        {
+            x++;
+            xx++;
+            if (map[xx] == '\0')
+                break ;
+        }
+        if ((y != 0 && cmp != x) || (y == 1 && x <= 0))
+            error();
+        cmp = x;
+        y++;
+    }
+    return (cmp);
 }
+// //returns lenght of map from raw map
+// int get_lenght(char *map)
+// {
+// 	// int i;
+// 	// int resultat;
+	
+// 	// i = 0;
+// 	// resultat = 0;
+// 	// while (map[i] != ' ')
+// 	// {
+// 	// 	resultat *= 10;
+// 	// 	resultat += (map[i] - 48);
+// 	// 	i++;	
+// 	// }
+// 	return(25);
+// }
 
 //returns height of map from raw map
-int get_height(char *map)
-{
-	// int i;
-	// int nbr_of_space;
-	// int resultat;
+// int get_height(char *map)
+// {
+// 	// int i;
+// 	// int nbr_of_space;
+// 	// int resultat;
 	
-	// i = 0;
-	// nbr_of_space = 0;
-	// resultat = 0;
-	// while (nbr_of_space != 1)
-	// {
-	// 	if (map[i] == ' ')
-	// 		nbr_of_space++;
-	// 	i++;
-	// }
+// 	// i = 0;
+// 	// nbr_of_space = 0;
+// 	// resultat = 0;
+// 	// while (nbr_of_space != 1)
+// 	// {
+// 	// 	if (map[i] == ' ')
+// 	// 		nbr_of_space++;
+// 	// 	i++;
+// 	// }
 	
-	// while (map[i] != ' ')
-	// {
-	// 	resultat *= 10;
-	// 	resultat += (map[i] - 48);
-	// 	i++;	
-	// }
-	return(25);
-}
+// 	// while (map[i] != ' ')
+// 	// {
+// 	// 	resultat *= 10;
+// 	// 	resultat += (map[i] - 48);
+// 	// 	i++;	
+// 	// }
+// 	return(25);
+// }
 
 //returns the number of char in the map from get_lenght() and get_height()
 int get_char_lenght(char* map)
@@ -184,7 +247,7 @@ int get_char_lenght(char* map)
 
 
 //prend raw_map_cleaned en parametre et alloue de la memoire pour le stocker en tableau
-char **map_canvas(char *map)
+char **map_canvas(char *map, char *argv)
 {
 	char **array_map;
 	int i;
@@ -192,16 +255,16 @@ char **map_canvas(char *map)
 	i = 0;
 	
 	//alloue le nb de ligne
-	array_map = (char**)malloc(sizeof(char *) * get_height(raw_map()));
+	array_map = (char**)malloc(sizeof(char *) * get_height(raw_map(argv)));
 	
 	//alloue le nb de caractere par ligne
-	while (i < get_height(raw_map()))
+	while (i < get_height(raw_map(argv)))
 	{
-		array_map[i] = malloc(sizeof(char) * get_lenght(raw_map()));
+		array_map[i] = malloc(sizeof(char) * get_lenght(raw_map(argv)));
 		i++;
 	}
 	//libere la memoir allouée a raw_map
-	free(raw_map());
+	free(raw_map(argv));
 	return (array_map);
 }
 
@@ -245,17 +308,17 @@ char **map_filled(char **map_canvas, char *raw_map_clean)
 
 
 
-char **o_to_0(char **map)
+char **o_to_0(char **map, char *argv)
 {
     int j;
     int i;
     i = 0;
-    while (i < (get_height(raw_map())))
+    while (i < (get_height(raw_map(argv))))
     {
         j = 0;
-        while (j < (get_lenght(raw_map())))
+        while (j < (get_lenght(raw_map(argv))))
         {
-            if (map[i][j] == plein_vide_obs(raw_map(), 'o'))
+            if (map[i][j] == plein_vide_obs(raw_map(argv), 'o'))
                 map[i][j] = '0';
             j++;
         }
@@ -280,13 +343,13 @@ char algo_compare(char gauche, char haut, char haut_gauche)
 }
 
 
-char **first_i_j(char **dest)
+char **first_i_j(char **dest, char *argv)
 {
     int i;
     int j;
     i = 0;
     j = 0;
-    while (j < (get_lenght(raw_map())))
+    while (j < (get_lenght(raw_map(argv))))
     {
         {
             if (dest[i][j] != '0')
@@ -295,7 +358,7 @@ char **first_i_j(char **dest)
         j++;
     }
     j = 0;
-    while (i < (get_height(raw_map())))
+    while (i < (get_height(raw_map(argv))))
     {
         if (dest[i][j] != '0')
             dest[i][j] = '1';
@@ -311,17 +374,17 @@ char **first_i_j(char **dest)
 /////////                                   |                                                   /////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-char **main_algo(char **map)
+char **main_algo(char **map, char *argv)
 {
     int i;
     int j;
     char min;
 
     i = 1;
-    while (i < get_height(raw_map()))
+    while (i < get_height(raw_map(argv)))
     {
         j = 1;
-        while (j < get_lenght(raw_map()))
+        while (j < get_lenght(raw_map(argv)))
         {	
 			if (map[i][j] != '0')
 			{
@@ -336,7 +399,7 @@ char **main_algo(char **map)
 }
 
 //methode qui cherche l'adresse du max(**map)
-char *find_max_adress(char **map)
+char *find_max_adress(char **map, char *argv)
 {
 	int i;
     int j;
@@ -345,10 +408,10 @@ char *find_max_adress(char **map)
 	
     i = 1;
 	max = '0';
-    while (i < get_height(raw_map()))
+    while (i < get_height(raw_map(argv)))
     {
         j = 1;
-        while (j < get_lenght(raw_map()))
+        while (j < get_lenght(raw_map(argv)))
         {	
 			if (map[i][j] > max)
 			{
@@ -363,7 +426,7 @@ char *find_max_adress(char **map)
 }
 
 
-char** put_x_on_map(char **map, int i_de_base, int j_de_base, char max)
+char** put_x_on_map(char **map, int i_de_base, int j_de_base, char max, char *argv)
 {
 	char max_i;
 	char max_j;
@@ -379,7 +442,7 @@ char** put_x_on_map(char **map, int i_de_base, int j_de_base, char max)
 		j = j_de_base;
         while (max_j > '0')
         {	
-			map[i][j] = plein_vide_obs(raw_map(), 'x');
+			map[i][j] = plein_vide_obs(raw_map(argv), 'x');
 			j--;
 			max_j--;
         }
@@ -391,28 +454,28 @@ char** put_x_on_map(char **map, int i_de_base, int j_de_base, char max)
 
 
 //methode qui chherche l'adresse du max dans la map(**map, adresse_max)
-char** put_all_x_on_map(char **map, char* adress_max)
+char** put_all_x_on_map(char **map, char* adress_max, char *argv)
 {
 	int i;
     int j;
 	
     i = 0;
-    while (i < get_height(raw_map()))
+    while (i < get_height(raw_map(argv)))
     {
         j = 0;
-        while (j < get_lenght(raw_map()))
+        while (j < get_lenght(raw_map(argv)))
         {	
 			if (&map[i][j] == adress_max)
 			{
-				put_x_on_map(map, i, j, map[i][j]);
+				put_x_on_map(map, i, j, map[i][j], argv);
 			}
 			else if (map[i][j] == '0')
 			{
-				map[i][j] = plein_vide_obs(raw_map(), 'o');
+				map[i][j] = plein_vide_obs(raw_map(argv), 'o');
 			}
 			else
 			{
-				map[i][j] = plein_vide_obs(raw_map(), '.');
+				map[i][j] = plein_vide_obs(raw_map(argv), '.');
 			}
 			
             j++;
@@ -422,7 +485,7 @@ char** put_all_x_on_map(char **map, char* adress_max)
 	return(map);
 }
 
-void print_result(void)
+void print_result(char *argv)
 {
 	int i;
 	char **canvas_map;
@@ -432,15 +495,15 @@ void print_result(void)
 	char **algo_result_map;
 	char **result;
 	
-	canvas_map = map_canvas(raw_map_cleaned(raw_map()));
-	cleaned_map = raw_map_cleaned(raw_map());
+	canvas_map = map_canvas(raw_map_cleaned(raw_map(argv)), argv);
+	cleaned_map = raw_map_cleaned(raw_map(argv));
 	filled_map = map_filled(canvas_map, cleaned_map);
-	algo_prep_map = first_i_j(o_to_0(filled_map));
-	algo_result_map = main_algo(algo_prep_map);
-	result = put_all_x_on_map(algo_result_map, find_max_adress(algo_result_map));
+	algo_prep_map = first_i_j(o_to_0(filled_map, argv), argv);
+	algo_result_map = main_algo(algo_prep_map, argv);
+	result = put_all_x_on_map(algo_result_map, find_max_adress(algo_result_map, argv), argv);
 	
 	i = 0;
-	while (i < get_height(raw_map()))
+	while (i < get_height(raw_map(argv)))
 	{
 		printf("%s", result[i]);
 		printf("\n");
@@ -454,18 +517,18 @@ void print_all_results(int argc, char **argv)
 {
 	int i;
 
-	i = 0;
-	while (argc < 0)
+	i = 1;
+	while (argc > 1)
 	{
-		//print
+		print_result(argv[i]);
+		i++;
+		argc--;
 	}
 	
 }
 
 int main(int argc, char **argv)
 {
-
-	print_result();
 	print_all_results(argc, argv);
 	return (0);
 }
